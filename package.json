@@ -1,0 +1,19 @@
+{
+  "name": "ajax_exercises",
+  "version": "1.0.0",
+  "description": "Un exercice sur AJAX",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ctaschereau/ajax_exercises.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://github.com/ctaschereau/ajax_exercises#readme",
+  "devDependencies": {
+    "nodemon": "^1.12.1"
+  }
+}
