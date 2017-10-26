@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Super exercice</title>
+	<style>
+		#paintingPre {
+			font-size: smaller;
+		}
+
+		.getMorePaint {
+			padding: 0;
+		}
+	</style>
+	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+	<script type="application/javascript">
+
+		let printErrorWithoutMuchEffort = (jqhxr, data1, data2) => {
+			console.error(data1);
+			console.error(data2);
+		};
+
+		let applyPaint = (buttonEl, paintData) => {
+			buttonEl.replaceWith(paintData);
+		};
+
+		let createButtonsForPainting = (paintingMetadata) => {
+			let _testTemplateString = `<button class="getMorePaint" data-painting_part_id="<%= id %>">🎨</button>\n`;
+			let newDom = '';
+			let templateFn = _.template(_testTemplateString);
+			_.times(paintingMetadata.nbLines, (lineNumber) => {
+				newDom += templateFn({id : lineNumber});
+			});
+			$('#start').hide();
+			$('pre#paintingPre').html(newDom);
+			$('.getMorePaint').click((event) => {
+				let buttonEl = $(event.target);
+				let paintingPartID = buttonEl.data('painting_part_id');
+				$.ajax({
+					type : 'GET',
+					url : `/painting/${paintingPartID}`,
+					success : (data) => {
+						applyPaint(buttonEl, data);
+					},
+					error : printErrorWithoutMuchEffort
+				});
+			});
+		};
+
+		$(document).ready(function() {
+			$('#start').click(() => {
+				$.ajax({
+					type : 'GET',
+					url : '/painting',
+					success : (data) => {
+						console.info(data);
+						createButtonsForPainting(data);
+					},
+					error : printErrorWithoutMuchEffort
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+<h1>AJAX...</h1>
+<p>
+	<button id="start">Start</button>
+</p>
+<pre id="paintingPre"></pre>
+</body>
+</html>
