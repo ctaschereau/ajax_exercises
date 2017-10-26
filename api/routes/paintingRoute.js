@@ -6,6 +6,6 @@ module.exports = (app) => {
 		.get(paintingController.get_painting_metadata);
 
 
-	app.route('/painting/:paintingPartID')
+	app.route('/painting/:paintingID/:paintingPartID')
 		.get(paintingController.get_painting_part);
 };

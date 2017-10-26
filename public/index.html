@@ -26,20 +26,24 @@
 		};
 
 		let createButtonsForPainting = (paintingMetadata) => {
-			let _testTemplateString = `<button class="getMorePaint" data-painting_part_id="<%= id %>">🎨</button>\n`;
+			let _testTemplateString = `<button class="getMorePaint" data-painting_id="<%= painting_id %>" data-painting_part_id="<%= id %>">🎨</button>\n`;
 			let newDom = '';
 			let templateFn = _.template(_testTemplateString);
-			_.times(paintingMetadata.nbLines, (lineNumber) => {
-				newDom += templateFn({id : lineNumber});
+			_.times(Math.floor(paintingMetadata.nbLines / 4), (idx) => {
+				newDom += templateFn({
+					painting_id : paintingMetadata.paintingID,
+					id : idx * 4
+				});
 			});
 			$('#start').hide();
 			$('pre#paintingPre').html(newDom);
 			$('.getMorePaint').click((event) => {
 				let buttonEl = $(event.target);
+				let paintingID = buttonEl.data('painting_id');
 				let paintingPartID = buttonEl.data('painting_part_id');
 				$.ajax({
 					type : 'GET',
-					url : `/painting/${paintingPartID}`,
+					url : `/painting/${paintingID}/${paintingPartID}`,
 					success : (data) => {
 						applyPaint(buttonEl, data);
 					},
@@ -55,6 +59,8 @@
 					url : '/painting',
 					success : (data) => {
 						console.info(data);
+						let title = $('h1');
+						title.html(title.html() + ' ' + data.paintingName);
 						createButtonsForPainting(data);
 					},
 					error : printErrorWithoutMuchEffort
