@@ -1,6 +1,6 @@
 # Exercices AJAX
 
-- Si vous n'avez pas déjà un compte sur Github.com, faites-en un :)
+- Si vous n'avez pas déjà un compte sur [Github.com], faites-en un :)
 - Si vous n'avez pas déjà Git d'installé, [installez-le](https://git-scm.com/downloads)
 - Si vous n'avez pas déjà Node.JS d'installé, [installez-le](https://nodejs.org/en/download/)
 - Dans une ligne de commande, positionnez-vous où vous voulez synchroniser l'exercice
