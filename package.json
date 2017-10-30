@@ -10,10 +10,16 @@
     "type": "git",
     "url": "git+https://github.com/ctaschereau/ajax_exercises.git"
   },
-  "author": "",
+  "author": "Cédric Taschereau",
   "license": "ISC",
   "homepage": "https://github.com/ctaschereau/ajax_exercises#readme",
   "devDependencies": {
     "nodemon": "^1.12.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "consolidate": "^0.14.5",
+    "express": "^4.16.2",
+    "underscore": "^1.8.3"
   }
 }

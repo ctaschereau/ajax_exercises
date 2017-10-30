@@ -11,14 +11,20 @@
 		.getMorePaint {
 			padding: 0;
 		}
+
+		label {
+			width: 100px;
+			display: inline-block;
+		}
 	</style>
 	<script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
 	<script type="application/javascript">
 
-		let printErrorWithoutMuchEffort = (jqhxr, data1, data2) => {
-			console.error(data1);
-			console.error(data2);
+		let printError = (jqhxr, textStatus, errorThrown) => {
+			console.error(`jqhxr : ${JSON.stringify(jqhxr)}`);
+			console.error(`textStatus : ${JSON.stringify(textStatus)}`);
+			console.error(`errorThrown : ${JSON.stringify(errorThrown)}`);
 		};
 
 		let applyPaint = (buttonEl, paintData) => {
@@ -47,7 +53,7 @@
 					success : (data) => {
 						applyPaint(buttonEl, data);
 					},
-					error : printErrorWithoutMuchEffort
+					error : printError
 				});
 			});
 		};
@@ -63,7 +69,31 @@
 						title.html(title.html() + ' ' + data.paintingName);
 						createButtonsForPainting(data);
 					},
-					error : printErrorWithoutMuchEffort
+					error : printError
+				});
+			});
+		});
+
+		// ---------------------
+		// Person form stuff
+		// ---------------------
+		$(document).ready(function() {
+			let myForm = $('form#personForm');
+			myForm.find('#submit').click(() => {
+				let personData = {
+					id : myForm.find('#id')[0].value,
+					firstName : myForm.find('#firstName')[0].value,
+					lastName : myForm.find('#lastName')[0].value,
+				};
+				$.ajax({
+					type : 'PUT',
+					url : '/person',
+					dataType: 'json',
+					data : personData,
+					success : (data) => {
+						console.info(data);
+					},
+					error : printError
 				});
 			});
 		});
@@ -75,5 +105,16 @@
 	<button id="start">Start</button>
 </p>
 <pre id="paintingPre"></pre>
+<hr>
+<div id="personDiv">
+	<form id="personForm">
+		<h4>Person add form</h4>
+		<label for="id">ID:</label><input id="id" type="text" readonly /><br />
+		<label for="firstName">First name:</label><input id="firstName" type="text" /><br />
+		<label for="lastName">Last name:</label><input id="lastName" type="text" /><br />
+		<button id="submit" type="button">Submit</button>
+		<button id="delete" type="button" hidden>☢ Delete ☢</button>
+	</form>
+</div>
 </body>
 </html>
