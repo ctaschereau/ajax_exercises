@@ -3,7 +3,7 @@ const path = require('path');
 const _ = require('underscore');
 const express = require('express');
 const cons = require('consolidate');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 const randomFail = require('./middlewares/randomFail');
 const paintingRoutes = require('./api/routes/paintingRoute');

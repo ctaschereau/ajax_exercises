@@ -21,10 +21,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
 	<script type="application/javascript">
 
-		let printError = (jqhxr, textStatus, errorThrown) => {
-			console.error(`jqhxr : ${JSON.stringify(jqhxr)}`);
-			console.error(`textStatus : ${JSON.stringify(textStatus)}`);
-			console.error(`errorThrown : ${JSON.stringify(errorThrown)}`);
+		let printError = (jqhxrErr) => {
+			console.error(JSON.stringify(jqhxrErr.responseJSON, null, 4));
 		};
 
 		let applyPaint = (buttonEl, paintData) => {
@@ -79,22 +77,54 @@
 		// ---------------------
 		$(document).ready(function() {
 			let myForm = $('form#personForm');
+
+			myForm.find('#delete').click(() => {
+				$.ajax({
+					type : 'DELETE',
+					url : '/person/' + myForm.find('#id')[0].value,
+					dataType: 'json',
+					success : (data) => {
+						myForm.find('h4').html('Person add form');
+						myForm.find('#id').val(undefined);
+						myForm.find('#firstName').val(undefined);
+						myForm.find('#lastName').val(undefined);
+						myForm.find('#delete').hide();
+					},
+					error : printError
+				});
+			});
+
 			myForm.find('#submit').click(() => {
 				let personData = {
 					id : myForm.find('#id')[0].value,
 					firstName : myForm.find('#firstName')[0].value,
 					lastName : myForm.find('#lastName')[0].value,
 				};
-				$.ajax({
-					type : 'PUT',
-					url : '/person',
-					dataType: 'json',
-					data : personData,
-					success : (data) => {
-						console.info(data);
-					},
-					error : printError
-				});
+				if (personData.id) {
+					$.ajax({
+						type : 'POST',
+						url : '/person/' + personData.id,
+						dataType: 'json',
+						data : personData,
+						success : (data) => {
+							console.info(data);
+						},
+						error : printError
+					});
+				} else {
+					$.ajax({
+						type : 'PUT',
+						url : '/person',
+						dataType: 'json',
+						data : personData,
+						success : (data) => {
+							myForm.find('#id').val(data.id);
+							myForm.find('h4').html('Person edit form');
+							myForm.find('#delete').show();
+						},
+						error : printError
+					});
+				}
 			});
 		});
 	</script>
@@ -109,7 +139,7 @@
 <div id="personDiv">
 	<form id="personForm">
 		<h4>Person add form</h4>
-		<label for="id">ID:</label><input id="id" type="text" readonly /><br />
+		<label for="id">ID:</label><input id="id" type="text" disabled="disabled" /><br />
 		<label for="firstName">First name:</label><input id="firstName" type="text" /><br />
 		<label for="lastName">Last name:</label><input id="lastName" type="text" /><br />
 		<button id="submit" type="button">Submit</button>
