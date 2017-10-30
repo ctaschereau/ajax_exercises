@@ -21,14 +21,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
 	<script type="application/javascript">
 
-		let printError = (jqhxrErr) => {
-			console.error(JSON.stringify(jqhxrErr.responseJSON, null, 4));
-		};
-
-		let applyPaint = (buttonEl, paintData) => {
-			buttonEl.replaceWith(paintData);
-		};
-
 		let createButtonsForPainting = (paintingMetadata) => {
 			let _testTemplateString = `<button class="getMorePaint" data-painting_id="<%= painting_id %>" data-painting_part_id="<%= id %>">🎨</button>\n`;
 			let newDom = '';
@@ -45,30 +37,13 @@
 				let buttonEl = $(event.target);
 				let paintingID = buttonEl.data('painting_id');
 				let paintingPartID = buttonEl.data('painting_part_id');
-				$.ajax({
-					type : 'GET',
-					url : `/painting/${paintingID}/${paintingPartID}`,
-					success : (data) => {
-						applyPaint(buttonEl, data);
-					},
-					error : printError
-				});
+				window.location.assign(`/painting/${paintingID}/${paintingPartID}`);
 			});
 		};
 
 		$(document).ready(function() {
 			$('#start').click(() => {
-				$.ajax({
-					type : 'GET',
-					url : '/painting',
-					success : (data) => {
-						console.info(data);
-						let title = $('h1');
-						title.html(title.html() + ' ' + data.paintingName);
-						createButtonsForPainting(data);
-					},
-					error : printError
-				});
+				window.location.assign('/painting');
 			});
 		});
 
@@ -79,52 +54,11 @@
 			let myForm = $('form#personForm');
 
 			myForm.find('#delete').click(() => {
-				$.ajax({
-					type : 'DELETE',
-					url : '/person/' + myForm.find('#id')[0].value,
-					dataType: 'json',
-					success : (data) => {
-						myForm.find('h4').html('Person add form');
-						myForm.find('#id').val(undefined);
-						myForm.find('#firstName').val(undefined);
-						myForm.find('#lastName').val(undefined);
-						myForm.find('#delete').hide();
-					},
-					error : printError
-				});
+				window.location.assign('/person/' + myForm.find('#id')[0].value);
 			});
 
-			myForm.find('#submit').click(() => {
-				let personData = {
-					id : myForm.find('#id')[0].value,
-					firstName : myForm.find('#firstName')[0].value,
-					lastName : myForm.find('#lastName')[0].value,
-				};
-				if (personData.id) {
-					$.ajax({
-						type : 'POST',
-						url : '/person/' + personData.id,
-						dataType: 'json',
-						data : personData,
-						success : (data) => {
-							console.info(data);
-						},
-						error : printError
-					});
-				} else {
-					$.ajax({
-						type : 'PUT',
-						url : '/person',
-						dataType: 'json',
-						data : personData,
-						success : (data) => {
-							myForm.find('#id').val(data.id);
-							myForm.find('h4').html('Person edit form');
-							myForm.find('#delete').show();
-						},
-						error : printError
-					});
-				}
+			myForm.find('#submitThis').click(() => {
+				myForm.submit();
 			});
 		});
 	</script>
@@ -137,12 +71,12 @@
 <pre id="paintingPre"></pre>
 <hr>
 <div id="personDiv">
-	<form id="personForm">
+	<form id="personForm" action="" method="post">
 		<h4>Person add form</h4>
 		<label for="id">ID:</label><input id="id" type="text" disabled="disabled" /><br />
 		<label for="firstName">First name:</label><input id="firstName" type="text" /><br />
 		<label for="lastName">Last name:</label><input id="lastName" type="text" /><br />
-		<button id="submit" type="button">Submit</button>
+		<button id="submitThis" type="button">Submit</button>
 		<button id="delete" type="button" hidden>☢ Delete ☢</button>
 	</form>
 </div>
